@@ -3,13 +3,19 @@ const History = {
      * Key to set in sessionStorage
      * @type {String}
      */
-    storageKey: 'vue.router.back.button.history',
+    _storageKey: 'vue.router.back.button.history',
 
     /**
      * Fallback if sessionStorage is not available
      * @type {Array}
      */
-    history: [],
+    _history: [],
+
+    /**
+     * Current path
+     * @type {Integer}
+     */
+    _current: -1,
 
     /**
      * Check if sessionStorage is available
@@ -30,31 +36,56 @@ const History = {
      * @method
      * @return {Array}
      */
-    get () {
+    getHistory () {
         if (!this.useSession) {
-            return this.history
+            return this._history
         }
 
-        let history = sessionStorage.getItem(this.storageKey)
+        const session = sessionStorage.getItem(this._storageKey)
 
-        if (!history) {
-            return []
+        if (!session) {
+            this._history = []
         } else {
-            history = JSON.parse(history)
+            this._history = JSON.parse(session).history
         }
 
-        return history
+        return this._history
     },
 
     /**
-     * Save new history list
+     * Get current index
+     * @method
+     * @return {Array}
      */
-    save (history) {
+    getCurrent () {
         if (!this.useSession) {
-            this.history = history
+            return this._current
+        }
+
+        const session = sessionStorage.getItem(this._storageKey)
+
+        if (!session) {
+            this._current = -1
         } else {
-            history = JSON.stringify(history)
-            sessionStorage.setItem(this.storageKey, history)
+            this._current = JSON.parse(session).current
+        }
+
+        return this._current
+    },
+
+    /**
+     * Save to session
+     */
+    save () {
+        if (this.useSession) {
+            const session = JSON.stringify({
+                history: this._history,
+                current: this._current
+            })
+
+            sessionStorage.setItem(this._storageKey, session)
+
+            return this
         }
     },
 
@@ -62,46 +93,151 @@ const History = {
      * Get the previous path
      */
     previous () {
-        let history = this.get()
+        const history = this.getHistory()
 
-        if (history.length > 1 && history.slice(-2)[0]) {
-            return { path: history.slice(-2)[0] }
+        if (history.length > 1) {
+            return { path: history[this._current - 1] }
         }
 
         return { path: null }
     },
 
-    hasHistory () {
-        let history = this.get()
+    /**
+     * Get the current path
+     */
+    current () {
+        const history = this.getHistory()
 
-        return history.length > 1 && history.slice(-2)[0]
+        if (history.length > 1) {
+            return { path: history[this._current] }
+        }
+
+        return { path: null }
+    },
+
+    /**
+     * Get the next path
+     */
+    next () {
+        const history = this.getHistory()
+
+        if (history.length + 1 > this._current) {
+            return { path: history[this._current + 1] }
+        }
+
+        return { path: null }
+    },
+
+    /**
+     * Do we have any items in the history
+     */
+    hasHistory () {
+        const history = this.getHistory()
+
+        return history.length > 1
+    },
+
+    /**
+     * Can we go back in history?
+     */
+    hasPrevious () {
+        const current = this.getCurrent()
+
+        return current > 0
+    },
+
+    /**
+     * Can we go forward into the future?
+     */
+    hasForward () {
+        const current = this.getCurrent()
+        const history = this.getHistory()
+
+        return current + 1 < history.length
     },
 
     /**
      * Add new route to the history
      */
     push (path) {
-        let history = this.get()
-        history.push(path)
+        this._history = this.getHistory()
+        this._current = this.getCurrent()
 
-        this.save(history)
+        this._history.splice(this._current + 1, this._history.length)
+
+        const currentPath = this._history[this._history.length - 1]
+
+        if (currentPath !== path) {
+            this._history.push(path)
+            this._current = this._current + 1
+        }
+
+        this.save()
     },
 
     /**
      * User went back in history
      */
     back (amount) {
-        let history = this.get()
-        history.splice(-amount, amount)
+        if (amount < 0) {
+            return
+        }
 
-        this.save(history)
+        this._current = this.getCurrent()
+        this._current = this._current - amount
+
+        this.save()
+    },
+
+    /**
+     * User went forward to the future
+     */
+    forward (amount) {
+        if (amount < 0) {
+            return
+        }
+
+        this._current = this.getCurrent()
+        this._current = this._current + amount
+
+        this.save()
+    },
+
+    /**
+     * Get the recent future from history, uuh what?? =P
+     */
+    getTheRecentFuture () {
+        const history = this.getHistory()
+        const current = this.getCurrent()
+
+        return history.slice(current + 1, current + 4)
+    },
+
+    /**
+     * How far is a path in the future
+     */
+    howFarIntheFuture (path) {
+        const future = this.getTheRecentFuture()
+
+        return future.indexOf(path) + 1
+    },
+
+    /**
+     * Check if a path is in the future
+     */
+    isInTheFuture (path) {
+        return this.howFarIntheFuture(path) > 0
     },
 
     /**
      * Get the index of recently visited route
      */
     indexOfRecentHistory (path) {
-        let recentHistory = this.get().slice(-4).reverse()
+        const history = this.getHistory()
+        const current = this.getCurrent()
+
+        const recentHistory = history.slice(0, current + 1).reverse()
+
         return recentHistory.indexOf(path)
     },
 
@@ -110,13 +246,9 @@ const History = {
      * If so, the user must go back
      */
     visitedRecently (path) {
-        let index = this.indexOfRecentHistory(path)
+        const index = this.indexOfRecentHistory(path)
 
-        if (index === -1) {
-            return false
-        }
-
-        return true
+        return index !== -1
     }
 }
 
