@@ -10,6 +10,7 @@
     "vue": "^2.3.3",
     "vue-router": "^2.6.0"
   },
+  "homepage": "https://github.com/MaximVanhove/vue-router-back-button",
   "author": "Maxim Vanhove",
   "license": "MIT"
 }
