@@ -1,4 +1,8 @@
 # Vue router back button
+
+ [![npm](https://img.shields.io/npm/dt/vue-router-back-button.svg)](https://www.npmjs.com/package/vue-router-back-button)  [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/MaximVanhove/vue-router-back-button.svg)](https://github.com/MaximVanhove/vue-router-back-button) [![GitHub stars](https://img.shields.io/github/stars/MaximVanhove/vue-router-back-button.svg?style=social&logo=github&label=Stars)](https://github.com/MaximVanhove/vue-router-back-button)
+
+
 A simple VueJS package to extend vue-router with a back button.
 
 ## Why? I could just add "history.back()"
@@ -81,3 +85,10 @@ If you went back, you might want to undo that action right? Well now you can go 
 - Add Testing
 
 Feel free to send PR's or request new features (I'll might need to rename this to vue-router-history if you do though)
+
+## Author
+
+Maxim Vanhove
+Web developer at [Starring Jane](https://starringjane.com)
+
+ [![Twitter Follow](https://img.shields.io/twitter/follow/MrMaximVanhove.svg?style=social&logo=twitter&label=Follow)](https://twitter.com/MrMaximVanhove)
