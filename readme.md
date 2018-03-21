@@ -40,13 +40,44 @@ router.afterEach(writeHistory)
 
 ## Usage
 
-You can add this anywhere in your app as $routerHistory is installed globally. If you can't go back, $routerHistory.previous().path will return null.
+### Going back
 
+You can add this anywhere in your app as $routerHistory is installed globally. If you can't go back, $routerHistory.previous().path will return null.
 
 ```
 <router-link
-    v-if="$routerHistory.hasHistory()"
+    v-if="$routerHistory.hasPrevious()"
     :to="{ path: $routerHistory.previous().path }">
     GO BACK
 </router-link>
 ```
+
+### Going forward
+
+If you went back, you might want to undo that action right? Well now you can go forward as well!
+
+```
+<router-link
+    v-if="$routerHistory.hasForward()"
+    :to="{ path: $routerHistory.next().path }">
+    GO FORWARD
+</router-link>
+```
+
+## Documentation
+
+
+| Function | Description |
+| -------- |-------------|
+| previous () | Returns the previous visited path in an object |
+| hasPrevious() | Returns true if the user can go back |
+| next () | Returns the next visited path in an object, this happens when a user went back |
+| hasForward () | Returns true if the user can go forward |
+|  |  |
+
+## TODO
+
+- Add an es5 build for people who sadly aren't using es6
+- Add Testing
+
+Feel free to send PR's or request new features (I'll might need to rename this to vue-router-history if you do though)
