@@ -2,9 +2,10 @@
   "name": "vue-router-back-button",
   "version": "1.0.0",
   "description": "Add a back button to your application",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watchAll"
   },
   "dependencies": {
     "vue": "^2.3.3",
@@ -12,5 +13,12 @@
   },
   "homepage": "https://github.com/MaximVanhove/vue-router-back-button",
   "author": "Maxim Vanhove",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "babel-jest": "^22.4.3",
+    "jest": "^22.4.3",
+    "jest-serializer-vue": "^1.0.0",
+    "mock-vue-router": "^0.1.3",
+    "vue-jest": "^2.2.1"
+  }
 }

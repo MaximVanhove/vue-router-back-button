@@ -32,6 +32,16 @@ const History = {
     },
 
     /**
+     * Reset the history, mainly for testing
+     */
+    reset () {
+        this._history = []
+        this._current = -1
+
+        this.save()
+    },
+
+    /**
      * Get full history list
      * @method
      * @return {Array}
@@ -46,7 +56,7 @@ const History = {
         if (!session) {
             this._history = []
         } else {
-            this._history = JSON.parse(session).history
+            this._history = window.JSON.parse(session).history
         }
 
         return this._history
@@ -67,7 +77,7 @@ const History = {
         if (!session) {
             this._current = -1
         } else {
-            this._current = JSON.parse(session).current
+            this._current = window.JSON.parse(session).current
         }
 
         return this._current
@@ -78,7 +88,7 @@ const History = {
      */
     save () {
         if (this.useSession) {
-            const session = JSON.stringify({
+            const session = window.JSON.stringify({
                 history: this._history,
                 current: this._current
             })
