@@ -21,6 +21,7 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-jest": "^22.4.3",
+    "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.6.1",
     "jest": "^22.4.3",
     "jest-serializer-vue": "^1.0.0",
