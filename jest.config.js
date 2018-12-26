@@ -1,4 +1,5 @@
 module.exports = {
+    testURL: 'http://localhost/',
     moduleFileExtensions: [
         'js',
         'jsx',
@@ -14,5 +15,5 @@ module.exports = {
     },
     snapshotSerializers: [
         'jest-serializer-vue'
-    ]
+    ],
 }
