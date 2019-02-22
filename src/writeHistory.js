@@ -13,6 +13,7 @@ export default (to, from) => {
         /**
          * Save the new route
          */
+        if (History.ignoreSameRouteParams && to.name && from.name && to.name === from.name) return
         History.push(to.fullPath)
     }
 }
