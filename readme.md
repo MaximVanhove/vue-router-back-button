@@ -67,6 +67,17 @@ If you went back, you might want to undo that action right? Well now you can go 
 </router-link>
 ```
 
+### Ignoring routes with the same name
+
+If you want to ignore routes with the same name, just set the `ignoreRoutesWithSameName` option to `true`
+
+```
+Vue.use(VueRouterBackButton, {
+    router,
+    ignoreRoutesWithSameName: true,
+})
+```
+
 ## Documentation
 
 | Function | Description |
