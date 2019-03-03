@@ -23,9 +23,16 @@ const History = {
     useSession: window.sessionStorage ? 1 : 0,
 
     /**
+     * Ignore navigation to a route with the same name
+     */
+    ignoreRoutesWithSameName: false,
+
+    /**
      * Install global property $routerHistory
      */
-    install (Vue) {
+    install (Vue, { ignoreRoutesWithSameName }) {
+        History.ignoreRoutesWithSameName = ignoreRoutesWithSameName || false
+
         Object.defineProperty(Vue.prototype, '$routerHistory', {
             get () { return History }
         })

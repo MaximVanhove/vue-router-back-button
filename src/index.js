@@ -7,8 +7,8 @@ export {
 }
 
 export default {
-    install (Vue, { router }) {
-        Vue.use(routerHistory)
+    install (Vue, { router, ignoreRoutesWithSameName }) {
+        Vue.use(routerHistory, { ignoreRoutesWithSameName })
         router.afterEach(writeHistory)
     },
 }
