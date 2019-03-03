@@ -69,7 +69,6 @@ If you went back, you might want to undo that action right? Well now you can go 
 
 ## Documentation
 
-
 | Function | Description |
 | -------- |-------------|
 | previous () | Returns the previous visited path in an object |
@@ -77,11 +76,6 @@ If you went back, you might want to undo that action right? Well now you can go 
 | next () | Returns the next visited path in an object, this happens when a user went back |
 | hasForward () | Returns true if the user can go forward |
 |  |  |
-
-## TODO
-
-- Add an es5 build for people who sadly aren't using es6
-- Add Testing
 
 Feel free to send PR's or request new features (I'll might need to rename this to vue-router-history if you do though)
 
