@@ -22,7 +22,7 @@ After save, a programatic navigation to show page > go back will take you to **o
 
 ## Setup
 ```
-npm install vue-router-back-button --save-dev
+npm install vue-router-back-button --save
 ```
 
 Tell Vue to use routerHistory and add writeHistory as Global After Hook.
