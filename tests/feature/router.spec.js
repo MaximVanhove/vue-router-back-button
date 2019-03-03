@@ -2,10 +2,22 @@ import mock from 'mock-vue-router'
 import { routerHistory, writeHistory } from '@/index'
 
 const routes = [
-    '/home',
-    '/index',
-    '/show',
-    '/edit'
+    {
+        path : '/home',
+        name: 'home',
+    },
+    {
+        path : '/index',
+        name: 'index',
+    },
+    {
+        path : '/show',
+        name: 'show',
+    },
+    {
+        path : '/edit',
+        name: 'edit',
+    },
 ]
 
 describe('vue-router', () => {
@@ -14,6 +26,7 @@ describe('vue-router', () => {
     beforeEach(() => {
         $router = mock(routes).$router
         $router.afterEach(writeHistory)
+        routerHistory.reset()
     })
 
     test('it can write history', () => {
