@@ -5,3 +5,10 @@ export {
     routerHistory,
     writeHistory
 }
+
+export default {
+    install (Vue, { router }) {
+        Vue.use(routerHistory)
+        router.afterEach(writeHistory)
+    },
+}

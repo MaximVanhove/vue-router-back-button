@@ -30,16 +30,15 @@ Tell Vue to use routerHistory and add writeHistory as Global After Hook.
 ```
 import Vue from 'vue'
 import Router from 'vue-router'
-import { routerHistory, writeHistory } from 'vue-router-back-button'
+import VueRouterBackButton from 'vue-router-back-button'
 
 Vue.use(Router)
-Vue.use(routerHistory)
 
 const router = new Router({
     routes: []
 })
 
-router.afterEach(writeHistory)
+Vue.use(VueRouterBackButton, { router })
 ```
 
 ## Usage
