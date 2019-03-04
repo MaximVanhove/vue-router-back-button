@@ -30,7 +30,7 @@ const History = {
     /**
      * Install global property $routerHistory
      */
-    install (Vue, { ignoreRoutesWithSameName }) {
+    install (Vue, { ignoreRoutesWithSameName } = {}) {
         History.ignoreRoutesWithSameName = ignoreRoutesWithSameName || false
 
         Object.defineProperty(Vue.prototype, '$routerHistory', {
