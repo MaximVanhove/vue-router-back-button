@@ -90,6 +90,56 @@ Vue.use(VueRouterBackButton, {
 
 Feel free to send PR's or request new features (I'll might need to rename this to vue-router-history if you do though)
 
+## Nuxt support
+
+Add a new plugin file: `~/plugins/vue-router-back-button.js`
+
+```
+import Vue from 'vue';
+import VueRouterBackButton from 'vue-router-back-button'
+
+export default ({ app }) => {
+    Vue.use(VueRouterBackButton, { router: app.router });
+};
+```
+
+Add the reference to the plugins section of `nuxt.config.js`
+
+```
+...
+  plugins: [
+    ...
+    { mode: 'client', src: '~plugins/vue-router-back-button.js' },
+    ...
+  ],
+...
+```
+
+Now you just need to use nuxt-link instead of router-link
+
+```
+<template>
+    <nuxt-link :to="to">
+        &#8592; Back
+    </nuxt-link>
+</template>
+
+<script>
+export default {
+    computed: {
+        to () {
+            if (this.client || !this.$routerHistory || !this.$routerHistory.hasPrevious()) {
+                // probably ssr, or hasn't navigated yet.
+                return { path: '/' };
+            }
+
+            return { path: this.$routerHistory.previous().path };
+        },
+    },
+};
+</script>
+```
+
 ## Author
 
 Maxim Vanhove
