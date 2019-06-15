@@ -231,22 +231,6 @@ const History = {
     },
 
     /**
-     * How far is a path in the future
-     */
-    howFarIntheFuture (path) {
-        const future = this.getTheRecentFuture()
-
-        return future.indexOf(path) + 1
-    },
-
-    /**
-     * Check if a path is in the future
-     */
-    isInTheFuture (path) {
-        return this.howFarIntheFuture(path) > 0
-    },
-
-    /**
      * Get the index of recently visited route
      */
     indexOfRecentHistory (path) {

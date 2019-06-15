@@ -90,4 +90,17 @@ describe('vue-router', () => {
 
         expect(routerHistory.next().path).toEqual('/edit')
     })
+
+    test('it rewrites history when you go forward', () => {
+        $router.push('/1')
+        $router.push('/1.1')
+        $router.push('/2')
+
+        $router.push('/1.1')
+        $router.push('/1')
+        $router.push('/2')
+
+        expect(routerHistory.previous().path).toEqual('/1')
+        expect(routerHistory.next().path).toEqual(undefined)
+    })
 })
