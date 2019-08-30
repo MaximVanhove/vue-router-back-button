@@ -22,7 +22,7 @@ After save, a programatic navigation to show page > go back will take you to **o
 
 ## Setup
 ```
-npm install vue-router-back-button --save-dev
+npm install vue-router-back-button --save
 ```
 
 Tell Vue to use routerHistory and add writeHistory as Global After Hook.
@@ -30,16 +30,15 @@ Tell Vue to use routerHistory and add writeHistory as Global After Hook.
 ```
 import Vue from 'vue'
 import Router from 'vue-router'
-import { routerHistory, writeHistory } from 'vue-router-back-button'
+import VueRouterBackButton from 'vue-router-back-button'
 
 Vue.use(Router)
-Vue.use(routerHistory)
 
 const router = new Router({
     routes: []
 })
 
-router.afterEach(writeHistory)
+Vue.use(VueRouterBackButton, { router })
 ```
 
 ## Usage
@@ -68,8 +67,18 @@ If you went back, you might want to undo that action right? Well now you can go 
 </router-link>
 ```
 
-## Documentation
+### Ignoring routes with the same name
 
+If you want to ignore routes with the same name, just set the `ignoreRoutesWithSameName` option to `true`
+
+```
+Vue.use(VueRouterBackButton, {
+    router,
+    ignoreRoutesWithSameName: true,
+})
+```
+
+## Documentation
 
 | Function | Description |
 | -------- |-------------|
@@ -79,12 +88,57 @@ If you went back, you might want to undo that action right? Well now you can go 
 | hasForward () | Returns true if the user can go forward |
 |  |  |
 
-## TODO
-
-- Add an es5 build for people who sadly aren't using es6
-- Add Testing
-
 Feel free to send PR's or request new features (I'll might need to rename this to vue-router-history if you do though)
+
+## Nuxt support
+
+Add a new plugin file: `~/plugins/vue-router-back-button.js`
+
+```
+import Vue from 'vue';
+import VueRouterBackButton from 'vue-router-back-button'
+
+export default ({ app }) => {
+    Vue.use(VueRouterBackButton, { router: app.router });
+};
+```
+
+Add the reference to the plugins section of `nuxt.config.js`
+
+```
+...
+  plugins: [
+    ...
+    { mode: 'client', src: '~plugins/vue-router-back-button.js' },
+    ...
+  ],
+...
+```
+
+Now you just need to use nuxt-link instead of router-link
+
+```
+<template>
+    <nuxt-link :to="to">
+        &#8592; Back
+    </nuxt-link>
+</template>
+
+<script>
+export default {
+    computed: {
+        to () {
+            if (this.client || !this.$routerHistory || !this.$routerHistory.hasPrevious()) {
+                // probably ssr, or hasn't navigated yet.
+                return { path: '/' };
+            }
+
+            return { path: this.$routerHistory.previous().path };
+        },
+    },
+};
+</script>
+```
 
 ## Author
 

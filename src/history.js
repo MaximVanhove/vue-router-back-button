@@ -29,9 +29,16 @@ const History = {
     })(),
 
     /**
+     * Ignore navigation to a route with the same name
+     */
+    ignoreRoutesWithSameName: false,
+
+    /**
      * Install global property $routerHistory
      */
-    install (Vue) {
+    install (Vue, { ignoreRoutesWithSameName } = {}) {
+        History.ignoreRoutesWithSameName = ignoreRoutesWithSameName || false
+
         Object.defineProperty(Vue.prototype, '$routerHistory', {
             get () { return History }
         })
@@ -227,22 +234,6 @@ const History = {
         const current = this.getCurrent()
 
         return history.slice(current + 1, current + 4)
-    },
-
-    /**
-     * How far is a path in the future
-     */
-    howFarIntheFuture (path) {
-        const future = this.getTheRecentFuture()
-
-        return future.indexOf(path) + 1
-    },
-
-    /**
-     * Check if a path is in the future
-     */
-    isInTheFuture (path) {
-        return this.howFarIntheFuture(path) > 0
     },
 
     /**
