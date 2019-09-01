@@ -20,7 +20,13 @@ const History = {
     /**
      * Check if sessionStorage is available
      */
-    useSession: window.sessionStorage ? 1 : 0,
+    useSession: (() => {
+        try {
+            return !!window.sessionStorage
+        } catch(e) {
+            return false
+        }
+    })(),
 
     /**
      * Ignore navigation to a route with the same name
