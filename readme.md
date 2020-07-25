@@ -78,6 +78,18 @@ Vue.use(VueRouterBackButton, {
 })
 ```
 
+### Replacing routes
+
+If you want to replace the route e.g. `$router.replace()` you will need to pass a query parameter `replaceRoute=true`. This is a workaround due to [this issue in vue-router](https://github.com/vuejs/vue-router/issues/1620).
+
+```
+$router.replace('/edit?replaceRoute=true')
+```
+
+> **NOTE**:
+> The package will ignore this query parameter when comparing routes.
+> Technically you can still use `$router.push()` as long as the query parameter is `replaceRoute=true`. This behaviour is **not guaranteed** for future versions as this is a side effect due to the workaround used.
+
 ## Documentation
 
 | Function | Description |

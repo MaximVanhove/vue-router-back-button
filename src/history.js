@@ -196,6 +196,24 @@ const History = {
         }
 
         this.save()
+	},
+
+	/**
+     * Replace last route in the history
+     */
+    replace (path) {
+        this._history = this.getHistory()
+        this._current = this.getCurrent()
+
+        this._history.splice(this._current + 1, this._history.length)
+
+		const currentPath = this._history[this._history.length - 1]
+
+        if (currentPath !== path) {
+            this._history[this._history.length - 1] = path
+        }
+
+        this.save()
     },
 
     /**

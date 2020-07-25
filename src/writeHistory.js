@@ -1,8 +1,10 @@
 import History from './history'
+import removeParameterFromUrl from './utils/removeParameterFromUrl'
 
 export default (to, from) => {
-    if (History.visitedRecently(to.fullPath)) {
-        const amount = History.indexOfRecentHistory(to.fullPath)
+	const fullPath = removeParameterFromUrl(to.fullPath, 'replaceRoute')
+    if (History.visitedRecently(fullPath)) {
+        const amount = History.indexOfRecentHistory(fullPath)
 
         History.back(amount)
     } else {
@@ -11,11 +13,19 @@ export default (to, from) => {
          */
         if (History.ignoreRoutesWithSameName && to.name && from.name && to.name === from.name) {
             return
-        }
+		}
+
+		if (to && to.query && to.query.replaceRoute) {
+			/**
+			 * Replace the last route
+			 */
+			History.replace(fullPath)
+			return
+		}
 
         /**
          * Save the new route
          */
-        History.push(to.fullPath)
+        History.push(fullPath)
     }
 }
