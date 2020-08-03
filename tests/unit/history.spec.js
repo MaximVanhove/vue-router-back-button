@@ -1,20 +1,29 @@
 import { routerHistory } from '@/index'
 
+let push = (path) => {
+    window.history.pushState({}, '', path)
+    routerHistory.push(path)
+}
+
 describe('empty history', () => {
+    beforeEach(() => {
+        routerHistory.reset()
+    })
+
     test('it returns an empty history stack', () => {
         expect(routerHistory.getHistory()).toEqual([])
     })
 
     test('it can write history', () => {
-        routerHistory.push('/home')
-        routerHistory.push('/contact')
+        push('/home')
+        push('/contact')
 
         expect(routerHistory.getHistory()).toContain('/home')
         expect(routerHistory.getHistory()).toContain('/contact')
     })
 
     test('it can reset the history', () => {
-        routerHistory.push('/about')
+        push('/about')
 
         routerHistory.reset()
 
@@ -25,9 +34,9 @@ describe('empty history', () => {
 describe('filled history stack', () => {
     beforeEach(() => {
         routerHistory.reset()
-        routerHistory.push('/step-1')
-        routerHistory.push('/step-2')
-        routerHistory.push('/step-3')
+        push('/step-1')
+        push('/step-2')
+        push('/step-3')
     })
 
     test('it has history', () => {
@@ -39,8 +48,8 @@ describe('filled history stack', () => {
     })
 
     test('it can go back', () => {
-        routerHistory.push('/step-4')
-        routerHistory.push('/step-5')
+        push('/step-4')
+        push('/step-5')
 
         routerHistory.back(1)
 

@@ -37,6 +37,15 @@ const routes = [
 describe('vue-router', () => {
     let $router
 
+    let push = (path) => {
+        window.history.pushState({}, '', path)
+        $router.push(path)
+    }
+
+    let replace = (path) => {
+        $router.replace(path)
+    }
+
     beforeEach(() => {
         $router = mock(routes).$router
         $router.afterEach(writeHistory)
@@ -44,16 +53,24 @@ describe('vue-router', () => {
     })
 
     test('it can write history', () => {
-        $router.push('/index')
+        push('/index')
 
         expect(routerHistory.getHistory()).toContain('/index')
     })
 
     test('it goes back where you actually came from', () => {
-        $router.push('/index')
-        $router.push('/show')
-        $router.push('/edit')
-        $router.push('/show')
+        push('/index')
+        push('/show')
+        push('/edit')
+        push('/show')
+
+        expect(routerHistory.previous().path).toEqual('/index')
+    })
+
+    test('it ignores the route when it was replaced', () => {
+        push('/index')
+        push('/show')
+        replace('/edit')
 
         expect(routerHistory.previous().path).toEqual('/index')
     })
@@ -61,11 +78,11 @@ describe('vue-router', () => {
     test('it can go back to routes with the same name', () => {
         routerHistory.ignoreRoutesWithSameName = false
 
-        $router.push('/index')
-        $router.push('/home')
-        $router.push('/dashboard')
-        $router.push('/dashboard/stats')
-        $router.push('/dashboard/map')
+        push('/index')
+        push('/home')
+        push('/dashboard')
+        push('/dashboard/stats')
+        push('/dashboard/map')
 
         expect(routerHistory.previous().path).toEqual('/dashboard/stats')
     })
@@ -73,32 +90,32 @@ describe('vue-router', () => {
     test('it can ignore routes with the same name', () => {
         routerHistory.ignoreRoutesWithSameName = true
 
-        $router.push('/index')
-        $router.push('/home')
-        $router.push('/dashboard')
-        $router.push('/dashboard/stats')
-        $router.push('/dashboard/map')
+        push('/index')
+        push('/home')
+        push('/dashboard')
+        push('/dashboard/stats')
+        push('/dashboard/map')
 
         expect(routerHistory.previous().path).toEqual('/home')
     })
 
     test('it takes you forward', () => {
-        $router.push('/index')
-        $router.push('/show')
-        $router.push('/edit')
-        $router.push('/show')
+        push('/index')
+        push('/show')
+        push('/edit')
+        push('/show')
 
         expect(routerHistory.next().path).toEqual('/edit')
     })
 
     test('it rewrites history when you go forward', () => {
-        $router.push('/1')
-        $router.push('/1.1')
-        $router.push('/2')
+        push('/1')
+        push('/1.1')
+        push('/2')
 
-        $router.push('/1.1')
-        $router.push('/1')
-        $router.push('/2')
+        push('/1.1')
+        push('/1')
+        push('/2')
 
         expect(routerHistory.previous().path).toEqual('/1')
         expect(routerHistory.next().path).toEqual(undefined)

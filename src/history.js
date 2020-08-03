@@ -18,6 +18,12 @@ const History = {
     _current: -1,
 
     /**
+     * Current path
+     * @type {Integer}
+     */
+    _previousBrowserHistoryLength: 0,
+
+    /**
      * Check if sessionStorage is available
      */
     useSession: (() => {
@@ -50,6 +56,7 @@ const History = {
     reset () {
         this._history = []
         this._current = -1
+        this._previousBrowserHistoryLength = 0
 
         this.save()
     },
@@ -183,6 +190,14 @@ const History = {
      * Add new route to the history
      */
     push (path) {
+        // Check if history length has changed since last push
+        // We asume the replace function was called when not
+        if (this._previousBrowserHistoryLength === window.history.length) {
+            return;
+        }
+
+        this._previousBrowserHistoryLength = window.history.length
+
         this._history = this.getHistory()
         this._current = this.getCurrent()
 
