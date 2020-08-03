@@ -67,6 +67,12 @@ If you went back, you might want to undo that action right? Well now you can go 
 </router-link>
 ```
 
+### Navigate without saving it to the history
+
+Sometimes you don't want to store a  programmatic navigation in the history because users should not get back to it.
+
+Use `router.replace('/path')` instead of `router.push('/path')`
+
 ### Ignoring routes with the same name
 
 If you want to ignore routes with the same name, just set the `ignoreRoutesWithSameName` option to `true`
