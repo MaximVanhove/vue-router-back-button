@@ -18,10 +18,11 @@ const History = {
     _current: -1,
 
     /**
-     * Current path
-     * @type {Integer}
+     * Previous state event
+     * Possible values: null | popstate | pushState | replaceState
+     * @type {String}
      */
-    _previousBrowserHistoryLength: 0,
+    _previousStateEvent: null,
 
     /**
      * Check if sessionStorage is available
@@ -44,10 +45,38 @@ const History = {
      */
     install (Vue, { ignoreRoutesWithSameName } = {}) {
         History.ignoreRoutesWithSameName = ignoreRoutesWithSameName || false
+        History.registerHistoryEvents()
 
         Object.defineProperty(Vue.prototype, '$routerHistory', {
             get () { return History }
         })
+    },
+
+    registerHistoryEvents () {
+        /**
+         * Track popstate
+         */
+         window.addEventListener('popstate', function () {
+            History._previousStateEvent = 'popstate';
+        });
+
+        /**
+         * Track pushState and replaceState
+         */
+        var spy = function(original, type) {
+            return function () {
+                History._previousStateEvent = type;
+                return original.apply(this, arguments);
+            };
+        };
+
+        window.history.pushState = spy(window.history.pushState, 'pushState');
+        window.history.replaceState = spy(window.history.replaceState, 'replaceState');
+
+        /**
+         * Disable function once registered
+         */
+        History.registerHistoryEvents = function () {};
     },
 
     /**
@@ -190,9 +219,8 @@ const History = {
      * Add new route to the history
      */
     push (path) {
-        // Check if history length has changed since last push
-        // We asume the replace function was called when not
-        if (this._previousBrowserHistoryLength === window.history.length) {
+        // Check if route change was triggerd by history.replaceState
+        if (this._previousStateEvent === 'replaceState') {
             return;
         }
 

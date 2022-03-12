@@ -43,6 +43,7 @@ describe('vue-router', () => {
     }
 
     let replace = (path) => {
+        window.history.replaceState({}, '', path)
         $router.replace(path)
     }
 
@@ -50,6 +51,7 @@ describe('vue-router', () => {
         $router = mock(routes).$router
         $router.afterEach(writeHistory)
         routerHistory.reset()
+        routerHistory.registerHistoryEvents()
     })
 
     test('it can write history', () => {
