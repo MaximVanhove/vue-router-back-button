@@ -1,6 +1,6 @@
 {
   "name": "vue-router-back-button",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Add a back button to your application",
   "main": "dist/index.js",
   "scripts": {
