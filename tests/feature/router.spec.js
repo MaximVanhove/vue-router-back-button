@@ -38,20 +38,21 @@ describe('vue-router', () => {
     let $router
 
     let push = (path) => {
-        window.history.pushState({}, '', path)
         $router.push(path)
+        window.history.pushState({}, '', path)
     }
 
     let replace = (path) => {
-        window.history.replaceState({}, '', path)
         $router.replace(path)
+        window.history.replaceState({}, '', path)
     }
 
     beforeEach(() => {
         $router = mock(routes).$router
         $router.afterEach(writeHistory)
-        routerHistory.reset()
+        routerHistory.router = $router
         routerHistory.registerHistoryEvents()
+        routerHistory.reset()
     })
 
     test('it can write history', () => {

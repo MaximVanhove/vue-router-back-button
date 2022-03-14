@@ -18,11 +18,9 @@ const History = {
     _current: -1,
 
     /**
-     * Previous state event
-     * Possible values: null | popstate | pushState | replaceState
-     * @type {String}
+     * Store previous state in case of an undo
      */
-    _previousStateEvent: null,
+    _undo: null,
 
     /**
      * Check if sessionStorage is available
@@ -36,6 +34,11 @@ const History = {
     })(),
 
     /**
+     * Vue router
+     */
+    router: null,
+
+    /**
      * Ignore navigation to a route with the same name
      */
     ignoreRoutesWithSameName: false,
@@ -43,7 +46,8 @@ const History = {
     /**
      * Install global property $routerHistory
      */
-    install (Vue, { ignoreRoutesWithSameName } = {}) {
+    install (Vue, { router, ignoreRoutesWithSameName } = {}) {
+        History.router = router;
         History.ignoreRoutesWithSameName = ignoreRoutesWithSameName || false
         History.registerHistoryEvents()
 
@@ -54,29 +58,27 @@ const History = {
 
     registerHistoryEvents () {
         /**
-         * Track popstate
+         * Track replaceState
          */
-         window.addEventListener('popstate', function () {
-            History._previousStateEvent = 'popstate';
-        });
-
-        /**
-         * Track pushState and replaceState
-         */
-        var spy = function(original, type) {
+        var spy = function(original, callback) {
             return function () {
-                History._previousStateEvent = type;
-                return original.apply(this, arguments);
-            };
-        };
+                callback.apply(History, arguments)
+                return original.apply(this, arguments)
+            }
+        }
 
-        window.history.pushState = spy(window.history.pushState, 'pushState');
-        window.history.replaceState = spy(window.history.replaceState, 'replaceState');
+        window.history.replaceState = spy(window.history.replaceState, this.onReplaceState)
 
         /**
          * Disable function once registered
          */
-        History.registerHistoryEvents = function () {};
+        History.registerHistoryEvents = function () {}
+    },
+
+    onReplaceState () {
+        if (this.router && this.router.currentRoute.fullPath === this.current().path) {
+            this.undoPush()
+        }
     },
 
     /**
@@ -85,7 +87,6 @@ const History = {
     reset () {
         this._history = []
         this._current = -1
-        this._previousBrowserHistoryLength = 0
 
         this.save()
     },
@@ -219,15 +220,12 @@ const History = {
      * Add new route to the history
      */
     push (path) {
-        // Check if route change was triggerd by history.replaceState
-        if (this._previousStateEvent === 'replaceState') {
-            return;
-        }
-
-        this._previousBrowserHistoryLength = window.history.length
-
         this._history = this.getHistory()
         this._current = this.getCurrent()
+        this._undo = {
+            history: this._history,
+            current: this._current,
+        }
 
         this._history.splice(this._current + 1, this._history.length)
 
@@ -239,6 +237,19 @@ const History = {
         }
 
         this.save()
+    },
+
+    /**
+     * Undo the last push
+     * Used for navigations with replaceState
+     */
+    undoPush () {
+        if (this._undo && this._undo.hasOwnProperty('history') && this._undo.hasOwnProperty('current')) {
+            this._history = this._undo.history
+            this._current = this._undo.current
+    
+            this.save()
+        }
     },
 
     /**

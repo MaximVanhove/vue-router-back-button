@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration test</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script src="https://unpkg.com/vue-router@2.8.1/dist/vue-router.js"></script>
+    <script src="../../dist/index.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Integration test</h1>
+        <p>
+          <router-link to="/">Go to index</router-link>
+          <router-link to="/show">Go to show</router-link>
+          <router-link to="/edit">Go to edit</router-link>
+          <button type="button" @click="replaceTo('/edit')">Replace to edit</button>
+          <router-link
+                v-if="$routerHistory.hasPrevious()"
+                :to="{ path: $routerHistory.previous().path }"
+            >
+                Go back to {{ $routerHistory.previous().path }}
+            </router-link>
+            <router-link
+                v-if="$routerHistory.hasForward()"
+                :to="{ path: $routerHistory.next().path }"
+            >
+                Go next to {{ $routerHistory.next().path }}
+            </router-link>
+        </p>
+        <router-view></router-view>
+      </div>
+
+    <script>
+        const IndexPage = { template: '<h2>index</h2>' };
+        const ShowPage = { template: '<h2>show</h2>' };
+        const EditPage = { template: '<h2>edit</h2>' };
+
+        Vue.use(VueRouter);
+
+        const router = new VueRouter({
+            routes: [
+                { path: '/', component: IndexPage },
+                { path: '/show', component: ShowPage },
+                { path: '/edit', component: EditPage },
+            ],
+        });
+
+        Vue.use(VueRouterBackButton.default, { router });
+
+        const app = new Vue({
+            router,
+            methods: {
+                replaceTo: function (path) {
+                    router.replace(path);
+                },
+            },
+        }).$mount('#app')
+    </script>
+</body>
+</html>

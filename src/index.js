@@ -13,7 +13,7 @@ export default {
             return
         }
 
-        Vue.use(routerHistory, { ignoreRoutesWithSameName })
+        Vue.use(routerHistory, { router, ignoreRoutesWithSameName })
         router.afterEach(writeHistory)
     },
 }
