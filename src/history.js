@@ -220,18 +220,20 @@ const History = {
      * Add new route to the history
      */
     push (path) {
-        this._history = this.getHistory()
-        this._current = this.getCurrent()
         this._undo = {
             history: this._history,
             current: this._current,
         }
+        
+        this._history = this.getHistory()
+        this._current = this.getCurrent()
 
         this._history.splice(this._current + 1, this._history.length)
 
         const currentPath = this._history[this._history.length - 1]
 
         if (currentPath !== path) {
+            this._undo.history.push(path)
             this._history.push(path)
             this._current = this._current + 1
         }
@@ -245,6 +247,7 @@ const History = {
      */
     undoPush () {
         if (this._undo && this._undo.hasOwnProperty('history') && this._undo.hasOwnProperty('current')) {
+            this._undo.history.splice(this._undo.current, 1);
             this._history = this._undo.history
             this._current = this._undo.current
     
