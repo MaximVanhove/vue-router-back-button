@@ -78,6 +78,14 @@ describe('vue-router', () => {
         expect(routerHistory.previous().path).toEqual('/index')
     })
 
+    test('it ignores the route when it was replaced and should replace it in the undo history array', () => {
+        push('/index')
+        push('/show')
+        replace('/edit')
+
+        expect(routerHistory._undo.history).toEqual(['/index', '/edit'])
+    })
+
     test('it can go back to routes with the same name', () => {
         routerHistory.ignoreRoutesWithSameName = false
 
