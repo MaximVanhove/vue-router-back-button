@@ -18,11 +18,6 @@ const History = {
     _current: -1,
 
     /**
-     * Store previous state in case of an undo
-     */
-    _undo: null,
-
-    /**
      * Check if sessionStorage is available
      */
     useSession: (() => {
@@ -77,7 +72,7 @@ const History = {
 
     onReplaceState () {
         if (this.router && this.router.currentRoute.fullPath === this.current().path) {
-            this.undoPush()
+            this.replaceLastPush()
         }
     },
 
@@ -222,10 +217,6 @@ const History = {
     push (path) {
         this._history = this.getHistory()
         this._current = this.getCurrent()
-        this._undo = {
-            history: this._history,
-            current: this._current,
-        }
 
         this._history.splice(this._current + 1, this._history.length)
 
@@ -240,16 +231,17 @@ const History = {
     },
 
     /**
-     * Undo the last push
+     * Replace the last push
      * Used for navigations with replaceState
      */
-    undoPush () {
-        if (this._undo && this._undo.hasOwnProperty('history') && this._undo.hasOwnProperty('current')) {
-            this._history = this._undo.history
-            this._current = this._undo.current
-    
-            this.save()
-        }
+    replaceLastPush () {
+        this._history = this.getHistory()
+        this._current = this.getCurrent()
+
+        this._history.splice(this._current - 1, 1)
+        this._current = this._current - 1
+
+        this.save()
     },
 
     /**

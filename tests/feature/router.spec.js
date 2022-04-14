@@ -70,12 +70,26 @@ describe('vue-router', () => {
         expect(routerHistory.previous().path).toEqual('/index')
     })
 
-    test('it ignores the route when it was replaced', () => {
+    test('it replaces the route when it was replaced', () => {
         push('/index')
         push('/show')
         replace('/edit')
 
         expect(routerHistory.previous().path).toEqual('/index')
+        expect(routerHistory.current().path).toEqual('/edit')
+        expect(routerHistory.getHistory()).toEqual([ '/index', '/edit' ])
+    })
+
+    test('it can replace the route when user went backward', () => {
+        push('/dashboard')
+        push('/index')
+        push('/show')
+        push('/index')
+        replace('/edit')
+
+        expect(routerHistory.previous().path).toEqual('/dashboard')
+        expect(routerHistory.current().path).toEqual('/edit')
+        expect(routerHistory.getHistory()).toEqual([ '/dashboard', '/edit' ])
     })
 
     test('it can go back to routes with the same name', () => {
